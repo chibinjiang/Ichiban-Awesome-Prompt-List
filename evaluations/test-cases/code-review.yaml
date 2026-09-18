@@ -1,0 +1,32 @@
+- id: case-001
+  name: SQLAlchemy N+1
+  input: |
+    for order in orders:
+        print(order.customer.name)
+  expected:
+    - identify_possible_n_plus_one
+    - explain_lazy_loading_risk
+    - suggest_eager_loading
+  notes: 仅凭片段不能断言实际查询次数，需说明验证边界。
+
+- id: case-002
+  name: Missing authorization
+  input: |
+    @router.get("/users/{user_id}")
+    async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+        return await user_service.get_user(db, user_id)
+  expected:
+    - ask_about_authorization
+    - distinguish_missing_context_from_confirmed_bug
+  notes: 不能仅凭片段确定存在越权。
+
+- id: case-003
+  name: Clean endpoint
+  input: |
+    @router.get("/health")
+    async def health():
+        return {"status": "ok"}
+  expected:
+    - avoid_false_positive
+    - state_no_obvious_issue
+  notes: 不要为了输出问题而制造问题。
